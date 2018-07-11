@@ -1,0 +1,27 @@
+---
+
+- name: install list of packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - epel-release
+    - python-pip
+    - traceroute
+    - realmd
+    - samba
+    - samba-common
+    - oddjob
+    - oddjob-mkhomedir
+    - sssd
+    - ntp
+
+- name: upgrade pip
+  pip:
+    name: pip
+    state: latest
+
+- name: Install pexpect using pip
+  pip:
+    name: pexpect
+

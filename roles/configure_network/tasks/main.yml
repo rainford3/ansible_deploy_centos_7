@@ -1,0 +1,11 @@
+---
+
+#- name:
+#  firewalld:
+#    services: "{{ item }}"
+#    permanent: true
+#  state:     enabled
+#  with_items:
+#    - smb 
+
+

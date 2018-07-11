@@ -1,0 +1,20 @@
+---
+
+- name: Discover realm
+  shell: /bin/bash -c "/usr/sbin/realm discover {{ domain_full_lowercase }}"
+  register: realmd_discovery
+
+- name: Check if machine is bound
+  shell: /bin/bash -c "realm list | grep sssd"
+  register: realmd_bound
+  changed_when: false
+  ignore_errors: true
+
+- name: Join Active Directory
+  expect:
+    command: /bin/bash -c "/usr/sbin/realm join {{ domain_full_lowercase }} -U {{ adauth_username }} --computer-ou=OU=Linux,OU=Servers,OU=Infrastructure,OU=Home,DC=home,DC=local"
+    responses:
+      Password for .*: "{{ ansible_realm_pass }}"
+  when: realmd_bound|failed
+  register: realmd_join
+

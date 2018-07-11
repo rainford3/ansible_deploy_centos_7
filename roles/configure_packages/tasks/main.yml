@@ -1,0 +1,7 @@
+---
+
+- include_tasks: 'update_packages.yml'
+  when: "'build' in {{ group_names }}"
+
+- include_tasks: 'install_packages.yml'
+  when: "'build' in {{ group_names }}"

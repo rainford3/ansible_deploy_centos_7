@@ -1,0 +1,23 @@
+---
+
+- name: Generate sssd.conf (1/3)
+  lineinfile: dest=/etc/sssd/sssd.conf line="use_fully_qualified_names = False"
+  register: sssd1
+
+- name: Generate sssd.conf (2/3)
+  lineinfile: dest=/etc/sssd/sssd.conf state=present regexp="fallback_homedir = /home/%u@%d" line="fallback_homedir = /home/%u/" backrefs=yes
+  register: sssd2
+
+- name: Generate sssd.conf (3/3)
+  lineinfile: dest=/etc/sssd/sssd.conf line="fallback_homedir = /home/%u/"
+  register: sssd3
+
+#Prior to ansible 2.2
+- name: Restart daemon
+  command: systemctl daemon-reload
+  when: sssd1.changed or sssd2.changed or sssd3.changed
+
+- name: Restart sssd
+  command: systemctl restart sssd
+  when: sssd1.changed or sssd2.changed or sssd3.changed
+

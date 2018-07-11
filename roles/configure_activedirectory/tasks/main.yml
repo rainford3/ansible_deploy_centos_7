@@ -1,0 +1,19 @@
+---
+
+- hostname:
+    name: "{{ hostvars.localhost.deploy.instance.hw_name }}"
+  when: hostvars['localhost']['deploy'] is defined
+
+- include_tasks: 'configure_realm.yml'
+
+- include_tasks: 'configure_sssd.yml'
+
+- name: test ssh into server 
+  expect:
+    command: ssh adm_rainfordt652@{{ inventory_hostname }} "echo success"
+    responses:
+      Are you sure you want to continue connecting: "yes"
+      to the list of known hosts: " "
+      password: "{{ ansible_ssh_pass }}"
+      Permission denied, please try again.: "{{ ansible_ssh_pass }}"
+  register: test_ad_auth

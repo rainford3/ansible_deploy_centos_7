@@ -1,0 +1,25 @@
+---
+
+- name: Create new VM from template
+  vmware_guest:
+    hostname: "{{ vcenter_server }}"
+    username: "{{ adauth_username }}"
+    password: "{{ ansible_realm_pass }}"
+    folder: /
+    datacenter: "DC1"
+    cluster: "vcl01"
+    validate_certs: no
+    name: "{{ vm_name }}"
+    state: poweredon
+    template: centos_7_template
+    networks:
+    - name: "2000-LAN-(10.2.0.0)"
+    wait_for_ip_address: yes
+  delegate_to: localhost
+  register: deploy
+
+- name: add host to group 
+  add_host:
+    name: "{{ deploy.instance.ipv4 }}"
+    groups:
+      - build
